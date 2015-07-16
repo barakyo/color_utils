@@ -68,12 +68,8 @@ defmodule ColorUtils do
   def hex_to_decimal(hex_value) do
     # Reverse string so that indices are coupled with the correct value to power
     # C8 -> 8C => (8 * 16^0) + (C * 16^1)
-    hex_list = Enum.with_index(String.codepoints(String.reverse(hex_value)))
-    decimal_values = Enum.map(hex_list, fn(hex_tuple) ->
-      # The hex value
-      x = elem(hex_tuple, 0)
-      # The power we raise to
-      i = elem(hex_tuple, 1)
+    hex_list = String.reverse(hex_value) |> String.codepoints() |> Enum.with_index()
+    decimal_values = Enum.map(hex_list, fn({x, i} = hex_tuple) ->
       # Convert hex value to 0-15
       x_value = Map.get(@hex_to_dec_symbols, x)
       # Raise to power and return
