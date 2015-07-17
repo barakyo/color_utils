@@ -65,11 +65,45 @@ defmodule ColorUtils do
     "#" <> red <> green <> blue
   end
 
+  def rgb_to_hsv(%RGB{red: red, green: green, blue: blue} = _rgb) do
+    # Convert rgb values to be from 0..1 rather than 0..255
+    rgb_values = %RGB{red: red/255, green: green/255, blue: blue/255}
+    rgb_values_list = [rgb_values.red, rgb_values.green, rgb_values.blue]
+    # Calculate c_delta using the max and min of the values
+    c_max = Enum.max(rgb_values_list)
+    c_min = Enum.min(rgb_values_list)
+    c_delta = c_max - c_min
+    hue = get_hue(rgb_values, c_delta, c_max)
+    saturation = get_saturation(c_delta, c_max)
+    # Return hsv where value is a %
+    %HSV{hue: hue, saturation: saturation, value: Float.round((c_max * 100), 1)}
+  end
+
+  defp get_hue(%RGB{red: red, green: green, blue: blue} = _rgb_values,
+    c_delta, c_max) do
+    60 * cond do
+      (c_delta == 0) -> 0
+      (c_max == red) ->
+        rem(((green - blue) / c_delta), 6)
+      (c_max == green) ->
+        ((blue - red) / c_delta) + 2
+      (c_max == blue) ->
+        ((red - green) / c_delta) + 4
+    end
+  end
+
+  defp get_saturation(c_delta, c_max) do
+    cond do
+      (c_max == 0) -> 0
+      true -> (c_delta / c_max)
+    end
+  end
+
   def hex_to_decimal(hex_value) do
     # Reverse string so that indices are coupled with the correct value to power
     # C8 -> 8C => (8 * 16^0) + (C * 16^1)
     hex_list = String.reverse(hex_value) |> String.codepoints() |> Enum.with_index()
-    decimal_values = Enum.map(hex_list, fn({x, i} = hex_tuple) ->
+    decimal_values = Enum.map(hex_list, fn({x, i} = _hex_tuple) ->
       # Convert hex value to 0-15
       x_value = Map.get(@hex_to_dec_symbols, x)
       # Raise to power and return

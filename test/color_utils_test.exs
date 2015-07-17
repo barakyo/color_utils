@@ -27,4 +27,10 @@ defmodule ColorUtilsTest do
     assert hex_255 == "FF"
   end
 
+  test "rgb to hsv" do
+    rgb = %RGB{red: 200, blue: 200, green: 200}
+    actual_hsv = ColorUtils.rgb_to_hsv(rgb)
+    expected_hsv = %HSV{hue: 0, saturation: 0.0, value: 78.4}
+    assert actual_hsv == expected_hsv
+  end
 end
