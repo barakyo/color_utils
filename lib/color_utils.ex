@@ -79,27 +79,27 @@ defmodule ColorUtils do
   end
 
   def decimal_to_binary(num) do
-    decimal_to_binary(num, [])
+    _decimal_to_binary(num, [])
   end
 
-  def decimal_to_binary(num, remainders) when num > 0 do
-    decimal_to_binary(div(num, 2), [rem(num, 2)] ++ remainders)
+  defp _decimal_to_binary(num, remainders) when num > 0 do
+    _decimal_to_binary(div(num, 2), [rem(num, 2)] ++ remainders)
   end
 
-  def decimal_to_binary(0, remainders) do
+  defp _decimal_to_binary(0, remainders) do
     remainders
   end
 
   def decimal_to_hex(num) do
-    decimal_to_hex(num, "")
+    _decimal_to_hex(num, "")
   end
 
-  def decimal_to_hex(num, hex) when num > 0 do
+  defp _decimal_to_hex(num, hex) when num > 0 do
     remainder = Map.get(@dec_to_hex_symbols, rem(num, 16))
-    decimal_to_hex(div(num, 16), remainder <> hex)
+    _decimal_to_hex(div(num, 16), remainder <> hex)
   end
 
-  def decimal_to_hex(0, hex) do
+  defp _decimal_to_hex(0, hex) do
     hex
   end
 
