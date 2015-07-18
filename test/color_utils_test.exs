@@ -32,6 +32,10 @@ defmodule ColorUtilsTest do
     actual_hsv = ColorUtils.rgb_to_hsv(rgb)
     expected_hsv = %HSV{hue: 0, saturation: 0.0, value: 78.4}
     assert actual_hsv == expected_hsv
+    expected_hsv_2 = %HSV{hue: 210, value: 100, saturation: 100}
+    rgb_2 = %RGB{red: 0, green: 127, blue: 255}
+    actual_hsv_2 = ColorUtils.rgb_to_hsv(rgb_2)
+    assert actual_hsv_2 == expected_hsv_2
   end
 
   test "hsv to rgb" do
@@ -47,5 +51,42 @@ defmodule ColorUtilsTest do
     expected_rgb_3 = %RGB{red: 96, green: 220, blue: 242}
     actual_rgb_3 = ColorUtils.hsv_to_rgb(hsv_3)
     assert actual_rgb_3 == expected_rgb_3
+    expected_rgb_4 = %RGB{red: 0, green: 127, blue: 255}
+    hsv_4 = %HSV{hue: 210, saturation: 100, value: 100}
+    actual_rgb_4 = ColorUtils.hsv_to_rgb(hsv_4)
+    assert actual_rgb_4 == expected_rgb_4
   end
+
+  test "get complementary colors" do
+    color = %HSV{hue: 0, saturation: 100, value: 100}
+    complementary_colors = ColorUtils.get_complementary_colors(color)
+    assert length(complementary_colors) == 3
+    [first, second, third] = complementary_colors
+    assert [first.hue, second.hue, third.hue] == [150, 180, 210]
+    color_2 = %HSV{hue: 225, saturation: 100, value: 100}
+    complementary_colors_2 = ColorUtils.get_complementary_colors(color_2)
+    assert length(complementary_colors_2) == 3
+    [first, second, third] = complementary_colors_2
+    assert [first.hue, second.hue, third.hue] == [15, 45, 75]
+  end
+
+  test "get complementary colors as rgb" do
+    color = %RGB{red: 255, green: 0, blue: 0}
+    [first, second, third] = ColorUtils.get_complementary_colors(color)
+    expected_first = %RGB{red: 0, green: 255, blue: 127}
+    expected_second = %RGB{red: 0, green: 255, blue: 255}
+    expected_third = %RGB{red: 0, green: 127, blue: 255}
+    assert first == expected_first
+    assert second == expected_second
+    assert third == expected_third
+  end
+
+  # test "get triad colors" do
+  #   color = %HSV{hue: 0, saturation: 100, value: 100}
+  #   triad_colors = ColorUtils.get_triad_colors(color)
+  #   assert length(complementary_colors) == 2
+  #   Enum.map(triad_colors, fn(%{hue: hue, _, _}) ->
+  #
+  #   end)
+  # end
 end

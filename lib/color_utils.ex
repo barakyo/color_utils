@@ -1,5 +1,4 @@
 defmodule ColorUtils do
-  require IEx
 
   @dec_to_hex_symbols %{
     0 => "0",
@@ -66,6 +65,24 @@ defmodule ColorUtils do
     "#" <> red <> green <> blue
   end
 
+  def get_complementary_colors(%RGB{} = rgb) do
+    rgb_to_hsv(rgb) |> get_complementary_colors |> Enum.map(&(hsv_to_rgb(&1)))
+  end
+
+  def get_complementary_colors(%HSV{} = hsv) do
+    add_degrees = [150, 180, 210]
+    Enum.map(add_degrees, fn(degree) ->
+      add_hue(hsv, degree)
+    end)
+  end
+
+  defp add_hue(%HSV{hue: hue} = hsv, degree) do
+    cond do
+      (degree + hue >= 360) -> %HSV{hsv | hue: hue + degree - 360}
+      true -> %HSV{hsv | hue: hue + degree}
+    end
+  end
+
   def rgb_to_hsv(%RGB{red: red, green: green, blue: blue} = _rgb) do
     # Convert rgb values to be from 0..1 rather than 0..255
     rgb_values = %RGB{red: red/255, green: green/255, blue: blue/255}
@@ -74,7 +91,7 @@ defmodule ColorUtils do
     c_max = Enum.max(rgb_values_list)
     c_min = Enum.min(rgb_values_list)
     c_delta = c_max - c_min
-    hue = get_hue(rgb_values, c_delta, c_max)
+    hue = get_hue(rgb_values, c_delta, c_max) |> trunc()
     saturation = get_saturation(c_delta, c_max)
     # Return hsv where value is a %
     %HSV{hue: hue, saturation: saturation, value: Float.round((c_max * 100), 1)}
@@ -105,23 +122,13 @@ defmodule ColorUtils do
     end
   end
 
-  defp get_rgb_primes(c_value, x_value, hue) do
-    cond do
-      (hue < 60)  -> %RGB{red: c_value, green: x_value, blue: 0}
-      (hue < 120) -> %RGB{red: x_value, green: c_value, blue: 0}
-      (hue < 180) -> %RGB{red: 0, green: c_value, blue: x_value}
-      (hue < 240) -> %RGB{red: 0, green: x_value, blue: c_value}
-      (hue < 300) -> %RGB{red: x_value, green: 0, blue: c_value}
-      (hue < 360) -> %RGB{red: c_value, green: 0, blue: x_value}
-    end
-  end
-
   defp get_hue(%RGB{red: red, green: green, blue: blue} = _rgb_values,
     c_delta, c_max) do
     60 * cond do
       (c_delta == 0) -> 0
       (c_max == red) ->
-        rem(((green - blue) / c_delta), 6)
+        val = ((green - blue) / c_delta) |> trunc()
+        rem(val, 6)
       (c_max == green) ->
         ((blue - red) / c_delta) + 2
       (c_max == blue) ->
@@ -132,7 +139,7 @@ defmodule ColorUtils do
   defp get_saturation(c_delta, c_max) do
     cond do
       (c_max == 0) -> 0
-      true -> (c_delta / c_max)
+      true -> (c_delta / c_max) * 100
     end
   end
 
