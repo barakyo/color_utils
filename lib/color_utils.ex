@@ -1,4 +1,5 @@
 defmodule ColorUtils do
+  require IEx
 
   @dec_to_hex_symbols %{
     0 => "0",
@@ -77,6 +78,42 @@ defmodule ColorUtils do
     saturation = get_saturation(c_delta, c_max)
     # Return hsv where value is a %
     %HSV{hue: hue, saturation: saturation, value: Float.round((c_max * 100), 1)}
+  end
+
+  def hsv_to_rgb(%HSV{hue: hue, saturation: saturation, value: value} = _hsv) do
+    h = hue / 60
+    i = Float.floor(h) |> trunc()
+    f = h - i
+    sat_dec = saturation / 100
+    p = value * (1 - sat_dec)
+    q = value * (1 - sat_dec * f)
+    t = value * (1 - sat_dec * (1 - f))
+    get_rgb_color = fn(color) ->
+      (color * 255) / 100 |> trunc()
+    end
+    p_rgb = get_rgb_color.(p)
+    v_rgb = get_rgb_color.(value)
+    t_rgb = get_rgb_color.(t)
+    q_rgb = get_rgb_color.(q)
+    case i do
+      0 -> %RGB{red: v_rgb, green: t_rgb, blue: p_rgb}
+      1 -> %RGB{red: q_rgb, green: v_rgb, blue: p_rgb}
+      2 -> %RGB{red: p_rgb, green: v_rgb, blue: t_rgb}
+      3 -> %RGB{red: p_rgb, green: q_rgb, blue: v_rgb}
+      4 -> %RGB{red: t_rgb, green: p_rgb, blue: v_rgb}
+      _ -> %RGB{red: v_rgb, green: p_rgb, blue: q_rgb}
+    end
+  end
+
+  defp get_rgb_primes(c_value, x_value, hue) do
+    cond do
+      (hue < 60)  -> %RGB{red: c_value, green: x_value, blue: 0}
+      (hue < 120) -> %RGB{red: x_value, green: c_value, blue: 0}
+      (hue < 180) -> %RGB{red: 0, green: c_value, blue: x_value}
+      (hue < 240) -> %RGB{red: 0, green: x_value, blue: c_value}
+      (hue < 300) -> %RGB{red: x_value, green: 0, blue: c_value}
+      (hue < 360) -> %RGB{red: c_value, green: 0, blue: x_value}
+    end
   end
 
   defp get_hue(%RGB{red: red, green: green, blue: blue} = _rgb_values,
