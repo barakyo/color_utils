@@ -1,5 +1,6 @@
 defmodule ColorUtils do
-
+  alias ColorUtils.RGB
+  alias ColorUtils.HSV
   @moduledoc """
   Color Util Library for Elixir
   """
@@ -41,19 +42,15 @@ defmodule ColorUtils do
     "F" => 15
   }
 
+  @complimentary_color_deltas [150, 180, 210]
+  @triad_color_deltas [-90, 90]
 
-  defmacro __using__(_) do
-
+  # Remove leading `"#"` if it exists
+  def hex_to_rgb(<<"#", hex::binary>>) do
+    hex_to_rgb(hex)
   end
 
-  def hex_to_rgb(hex) do
-    corrected_string = cond do
-      (String.at(hex, 0) == "#") -> String.slice(hex, 1..-1)
-      true -> hex
-    end
-    hex_red = String.slice(corrected_string, 0..1)
-    hex_green = String.slice(corrected_string, 2..3)
-    hex_blue = String.slice(corrected_string, 4..5)
+  def hex_to_rgb(<<hex_red::binary-size(2), hex_green::binary-size(2), hex_blue::binary-size(2)>>) do
     %RGB{
       red: hex_to_decimal(hex_red),
       blue: hex_to_decimal(hex_blue),
@@ -74,15 +71,13 @@ defmodule ColorUtils do
   end
 
   def get_complementary_colors(%HSV{} = hsv) do
-    add_degrees = [150, 180, 210]
-    Enum.map(add_degrees, fn(degree) ->
+    Enum.map(@complimentary_color_deltas, fn(degree) ->
       add_hue(hsv, degree)
     end)
   end
 
   def get_triad_colors(%HSV{} = hsv) do
-    add_degrees = [-90, 90]
-    Enum.map(add_degrees, &(add_hue(hsv, &1)))
+    Enum.map(@triad_color_deltas, &(add_hue(hsv, &1)))
   end
 
   def get_triad_colors(%RGB{} = rgb) do
@@ -118,13 +113,10 @@ defmodule ColorUtils do
     p = value * (1 - sat_dec)
     q = value * (1 - sat_dec * f)
     t = value * (1 - sat_dec * (1 - f))
-    get_rgb_color = fn(color) ->
-      (color * 255) / 100 |> trunc()
-    end
-    p_rgb = get_rgb_color.(p)
-    v_rgb = get_rgb_color.(value)
-    t_rgb = get_rgb_color.(t)
-    q_rgb = get_rgb_color.(q)
+    p_rgb = get_rgb_color(p)
+    v_rgb = get_rgb_color(value)
+    t_rgb = get_rgb_color(t)
+    q_rgb = get_rgb_color(q)
     case i do
       0 -> %RGB{red: v_rgb, green: t_rgb, blue: p_rgb}
       1 -> %RGB{red: q_rgb, green: v_rgb, blue: p_rgb}
@@ -133,6 +125,10 @@ defmodule ColorUtils do
       4 -> %RGB{red: t_rgb, green: p_rgb, blue: v_rgb}
       _ -> %RGB{red: v_rgb, green: p_rgb, blue: q_rgb}
     end
+  end
+
+  defp get_rgb_color (color) do
+      (color * 255) / 100 |> trunc()
   end
 
   defp get_hue(%RGB{red: red, green: green, blue: blue} = _rgb_values,
@@ -170,28 +166,28 @@ defmodule ColorUtils do
   end
 
   def decimal_to_binary(num) do
-    _decimal_to_binary(num, [])
+    decimal_to_binary(num, [])
   end
 
-  defp _decimal_to_binary(num, remainders) when num > 0 do
-    _decimal_to_binary(div(num, 2), [rem(num, 2)] ++ remainders)
-  end
-
-  defp _decimal_to_binary(0, remainders) do
+  defp decimal_to_binary(0, remainders) do
     remainders
   end
 
+  defp decimal_to_binary(num, remainders) when num > 0 do
+    decimal_to_binary(div(num, 2), [rem(num, 2)] ++ remainders)
+  end
+
   def decimal_to_hex(num) do
-    _decimal_to_hex(num, "")
+    decimal_to_hex(num, "")
   end
 
-  defp _decimal_to_hex(num, hex) when num > 0 do
-    remainder = Map.get(@dec_to_hex_symbols, rem(num, 16))
-    _decimal_to_hex(div(num, 16), remainder <> hex)
-  end
-
-  defp _decimal_to_hex(0, hex) do
+  defp decimal_to_hex(0, hex) do
     hex
+  end
+
+  defp decimal_to_hex(num, hex) when num > 0 do
+    remainder = Map.get(@dec_to_hex_symbols, rem(num, 16))
+    decimal_to_hex(div(num, 16), remainder <> hex)
   end
 
 end
