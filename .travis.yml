@@ -1,0 +1,7 @@
+language: elixir
+elixir:
+  - 1.0.5
+sudo: false # to use faster container based build environment
+notifications:
+  recipients:
+    - itsbarakyo@gmail.com
