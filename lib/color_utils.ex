@@ -1,5 +1,9 @@
 defmodule ColorUtils do
 
+  @moduledoc """
+  Color Util Library for Elixir
+  """
+
   @dec_to_hex_symbols %{
     0 => "0",
     1 => "1",
