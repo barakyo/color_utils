@@ -42,6 +42,9 @@ defmodule ColorUtils do
     "F" => 15
   }
 
+  @complimentary_color_deltas [150, 180, 210]
+  @triad_color_deltas [-90, 90]
+
   def hex_to_rgb(hex) do
     corrected_string = cond do
       (String.at(hex, 0) == "#") -> String.slice(hex, 1..-1)
@@ -70,15 +73,13 @@ defmodule ColorUtils do
   end
 
   def get_complementary_colors(%HSV{} = hsv) do
-    add_degrees = [150, 180, 210]
-    Enum.map(add_degrees, fn(degree) ->
+    Enum.map(@complimentary_color_deltas, fn(degree) ->
       add_hue(hsv, degree)
     end)
   end
 
   def get_triad_colors(%HSV{} = hsv) do
-    add_degrees = [-90, 90]
-    Enum.map(add_degrees, &(add_hue(hsv, &1)))
+    Enum.map(@triad_color_deltas, &(add_hue(hsv, &1)))
   end
 
   def get_triad_colors(%RGB{} = rgb) do
