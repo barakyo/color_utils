@@ -32,7 +32,7 @@ defmodule ColorUtilsTest do
     actual_hsv = ColorUtils.rgb_to_hsv(rgb)
     expected_hsv = %HSV{hue: 0, saturation: 0.0, value: 78.4}
     assert actual_hsv == expected_hsv
-    expected_hsv_2 = %HSV{hue: 210, value: 100, saturation: 100}
+    expected_hsv_2 = %HSV{hue: 210, value: 100.0, saturation: 100.0}
     rgb_2 = %RGB{red: 0, green: 127, blue: 255}
     actual_hsv_2 = ColorUtils.rgb_to_hsv(rgb_2)
     assert actual_hsv_2 == expected_hsv_2
