@@ -76,6 +76,15 @@ defmodule ColorUtils do
     end)
   end
 
+  def get_triad_colors(%HSV{} = hsv) do
+    add_degrees = [-90, 90]
+    Enum.map(add_degrees, &(add_hue(hsv, &1)))
+  end
+
+  def get_triad_colors(%RGB{} = rgb) do
+    rgb_to_hsv(rgb) |> get_triad_colors |> Enum.map(&(hsv_to_rgb(&1)))
+  end
+
   defp add_hue(%HSV{hue: hue} = hsv, degree) do
     cond do
       (degree + hue >= 360) -> %HSV{hsv | hue: hue + degree - 360}
