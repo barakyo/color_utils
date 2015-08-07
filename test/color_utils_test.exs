@@ -1,6 +1,5 @@
 defmodule ColorUtilsTest do
   use ExUnit.Case
-  use ColorUtils
   alias ColorUtils.RGB
   alias ColorUtils.HSV
 
