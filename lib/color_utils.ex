@@ -1,5 +1,6 @@
 defmodule ColorUtils do
-
+  alias ColorUtils.RGB
+  alias ColorUtils.HSV
   @moduledoc """
   Color Util Library for Elixir
   """

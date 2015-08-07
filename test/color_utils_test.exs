@@ -1,6 +1,8 @@
 defmodule ColorUtilsTest do
   use ExUnit.Case
   use ColorUtils
+  alias ColorUtils.RGB
+  alias ColorUtils.HSV
 
   test "converting from rgb to hex" do
     rgb = %RGB{red: 200, blue: 200, green: 200}
