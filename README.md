@@ -1,6 +1,8 @@
 ColorUtils
 ==========
 
+[![Build Status](https://travis-ci.org/barakyo/color_utils.svg?branch=master)](https://travis-ci.org/barakyo/color_utils)
+
 Color Util library for Elixir.
 
 ## Features ##
