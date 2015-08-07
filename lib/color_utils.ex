@@ -45,14 +45,12 @@ defmodule ColorUtils do
   @complimentary_color_deltas [150, 180, 210]
   @triad_color_deltas [-90, 90]
 
-  def hex_to_rgb(hex) do
-    corrected_string = cond do
-      (String.at(hex, 0) == "#") -> String.slice(hex, 1..-1)
-      true -> hex
-    end
-    hex_red = String.slice(corrected_string, 0..1)
-    hex_green = String.slice(corrected_string, 2..3)
-    hex_blue = String.slice(corrected_string, 4..5)
+  # Remove leading `"#"` if it exists
+  def hex_to_rgb(<<"#", hex::binary>>) do
+    hex_to_rgb(hex)
+  end
+
+  def hex_to_rgb(<<hex_red::binary-size(2), hex_green::binary-size(2), hex_blue::binary-size(2)>>) do
     %RGB{
       red: hex_to_decimal(hex_red),
       blue: hex_to_decimal(hex_blue),
