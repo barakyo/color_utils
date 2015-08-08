@@ -145,11 +145,12 @@ defmodule ColorUtils do
     end
   end
 
+  defp get_saturation(c_delta, 0) do
+    0
+  end
+
   defp get_saturation(c_delta, c_max) do
-    cond do
-      (c_max == 0) -> 0
-      true -> (c_delta / c_max) * 100
-    end
+    (c_delta / c_max) * 100
   end
 
   def hex_to_decimal(hex_value) do
