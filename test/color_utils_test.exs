@@ -103,4 +103,24 @@ defmodule ColorUtilsTest do
     assert second.green == 255
     assert second.blue == 0
   end
+
+  test "get analogous colors" do
+    color = %HSV{hue: 0, saturation: 100, value: 100}
+    analogous_colors = ColorUtils.get_analogous_colors(color)
+    [first, second] = analogous_colors
+    assert abs(first.hue - color.hue) == 30
+    assert abs(second.hue - color.hue) == 30
+  end
+
+  test "get analogous colors as rgb" do
+    color = %RGB{red: 255, green: 0, blue: 0}
+    analogous_colors = ColorUtils.get_analogous_colors(color)
+    [first, second] = analogous_colors
+    assert first.red == 255
+    assert first.green == 0
+    assert first.blue == 127
+    assert second.red == 255
+    assert second.green == 127
+    assert second.blue == 0
+  end
 end

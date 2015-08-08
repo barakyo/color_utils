@@ -44,6 +44,7 @@ defmodule ColorUtils do
 
   @complimentary_color_deltas [150, 180, 210]
   @triad_color_deltas [-90, 90]
+  @analogous_color_deltas [-30, 30]
 
   # Remove leading `"#"` if it exists
   def hex_to_rgb(<<"#", hex::binary>>) do
@@ -71,17 +72,23 @@ defmodule ColorUtils do
   end
 
   def get_complementary_colors(%HSV{} = hsv) do
-    Enum.map(@complimentary_color_deltas, fn(degree) ->
-      add_hue(hsv, degree)
-    end)
+    add_hue(@complimentary_color_deltas, hsv)
   end
 
   def get_triad_colors(%HSV{} = hsv) do
-    Enum.map(@triad_color_deltas, &(add_hue(hsv, &1)))
+    add_hue(@triad_color_deltas, hsv)
   end
 
   def get_triad_colors(%RGB{} = rgb) do
     rgb_to_hsv(rgb) |> get_triad_colors |> Enum.map(&(hsv_to_rgb(&1)))
+  end
+
+  def get_analogous_colors(%HSV{} = hsv) do
+    add_hue(@analogous_color_deltas, hsv)
+  end
+
+  def get_analogous_colors(%RGB{} = rgb) do
+    rgb_to_hsv(rgb) |> get_analogous_colors |> Enum.map(&(hsv_to_rgb(&1)))
   end
 
   defp add_hue(%HSV{hue: hue} = hsv, degree) do
@@ -89,6 +96,10 @@ defmodule ColorUtils do
       (degree + hue >= 360) -> %HSV{hsv | hue: hue + degree - 360}
       true -> %HSV{hsv | hue: hue + degree}
     end
+  end
+
+  defp add_hue(deltas, hsv) do
+    Enum.map(deltas, &add_hue(hsv, &1))
   end
 
   def rgb_to_hsv(%RGB{red: red, green: green, blue: blue} = _rgb) do
@@ -145,7 +156,7 @@ defmodule ColorUtils do
     end
   end
 
-  defp get_saturation(c_delta, 0) do
+  defp get_saturation(_c_delta, 0) do
     0
   end
 
