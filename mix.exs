@@ -7,6 +7,8 @@ defmodule ColorUtils.Mixfile do
      elixir: "~> 1.0",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     package: package,
+     description: description,
      deps: deps]
   end
 
@@ -28,6 +30,12 @@ defmodule ColorUtils.Mixfile do
   # Type `mix help deps` for more examples and options
   defp deps do
     []
+  end
+
+  defp description do
+    """
+    A Color Util library for Elixir.
+    """
   end
 
   defp package do
