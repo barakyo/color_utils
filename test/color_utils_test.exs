@@ -14,7 +14,15 @@ defmodule ColorUtilsTest do
     xyz = ColorUtils.rgb_to_xyz(rgb)
     assert xyz.x == 28.281379314464917
     assert xyz.y == 14.8232102214694
-    assert xyz.z == 1.8225076802216795 
+    assert xyz.z == 1.8225076802216795
+  end
+
+  test "converting rgb to lab" do
+    rgb = %RGB{red: 215.0, green: 15.0, blue: 15.0}
+    lab = ColorUtils.rgb_to_lab(rgb)
+    assert lab.l == 45.3910995366185
+    assert lab.a == 69.18657070671009
+    assert lab.b == 54.68642222255966
   end
 
   test "converting from hex to rgb" do

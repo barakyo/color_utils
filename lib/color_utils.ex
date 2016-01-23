@@ -2,6 +2,8 @@ defmodule ColorUtils do
   alias ColorUtils.RGB
   alias ColorUtils.HSV
   alias ColorUtils.XYZ
+  alias ColorUtils.LAB
+
   @moduledoc """
   Color Util Library for Elixir
   """
@@ -46,6 +48,9 @@ defmodule ColorUtils do
   @complimentary_color_deltas [150, 180, 210]
   @triad_color_deltas [-90, 90]
   @analogous_color_deltas [-30, 30]
+  @xyz_white_ref %XYZ{x: 95.047, y: 100.0, z: 108.883}
+  @xyz_epsilon 0.008856
+  @xyz_kappa 903.3
 
   # Remove leading `"#"` if it exists
   def hex_to_rgb(<<"#", hex::binary>>) do
@@ -68,7 +73,7 @@ defmodule ColorUtils do
     "#" <> red <> green <> blue
   end
 
-  def pivot_rgb(n) do
+  defp pivot_rgb(n) do
     if n > 0.04045 do
       :math.pow(((n + 0.055) / 1.055), 2.4) * 100.0
     else
@@ -86,6 +91,27 @@ defmodule ColorUtils do
       x: pivoted.red * 0.4124 + pivoted.green * 0.3576 + pivoted.blue * 0.1805,
       y: pivoted.red * 0.2126 + pivoted.green * 0.7152 + pivoted.blue * 0.0722,
       z: pivoted.red * 0.0193 + pivoted.green * 0.1192 + pivoted.blue * 0.9505
+    }
+  end
+
+  defp pivot_xyz(n) do
+    if n > @xyz_epsilon do
+      :math.pow(n, 1.0/3.0)
+    else
+      ((@xyz_kappa * n + 16) / 116)
+    end
+  end
+
+  def rgb_to_lab(%RGB{} = rgb) do
+    xyz = rgb_to_xyz(rgb)
+    x = pivot_xyz(xyz.x / @xyz_white_ref.x)
+    y = pivot_xyz(xyz.y / @xyz_white_ref.y)
+    z = pivot_xyz(xyz.z / @xyz_white_ref.z)
+
+    %LAB{
+      l: max(0, (116 * y - 16)),
+      a: 500 * (x - y),
+      b: 200 * (y - z)
     }
   end
 
