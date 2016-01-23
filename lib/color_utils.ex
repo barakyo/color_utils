@@ -1,6 +1,7 @@
 defmodule ColorUtils do
   alias ColorUtils.RGB
   alias ColorUtils.HSV
+  alias ColorUtils.XYZ
   @moduledoc """
   Color Util Library for Elixir
   """
@@ -65,6 +66,27 @@ defmodule ColorUtils do
     red = decimal_to_hex(rgb.red)
     green = decimal_to_hex(rgb.green)
     "#" <> red <> green <> blue
+  end
+
+  def pivot_rgb(n) do
+    if n > 0.04045 do
+      :math.pow(((n + 0.055) / 1.055), 2.4) * 100.0
+    else
+      (n / 12.92) * 100.0
+    end
+  end
+
+  def rgb_to_xyz(%RGB{} = rgb) do
+    pivoted = %RGB{
+      red: pivot_rgb(rgb.red / 255.0),
+      green: pivot_rgb(rgb.green / 255.0),
+      blue: pivot_rgb(rgb.blue / 255.0)
+    }
+    %XYZ{
+      x: pivoted.red * 0.4124 + pivoted.green * 0.3576 + pivoted.blue * 0.1805,
+      y: pivoted.red * 0.2126 + pivoted.green * 0.7152 + pivoted.blue * 0.0722,
+      z: pivoted.red * 0.0193 + pivoted.green * 0.1192 + pivoted.blue * 0.9505
+    }
   end
 
   def get_complementary_colors(%RGB{} = rgb) do

@@ -9,6 +9,14 @@ defmodule ColorUtilsTest do
     assert hex == "#C8C8C8"
   end
 
+  test "converting rgb to xyz" do
+    rgb = %RGB{red: 215.0, green: 15.0, blue: 15.0}
+    xyz = ColorUtils.rgb_to_xyz(rgb)
+    assert xyz.x == 28.281379314464917
+    assert xyz.y == 14.8232102214694
+    assert xyz.z == 1.8225076802216795 
+  end
+
   test "converting from hex to rgb" do
     rgb = ColorUtils.hex_to_rgb("#C8C8C8")
     assert rgb.blue == 200
