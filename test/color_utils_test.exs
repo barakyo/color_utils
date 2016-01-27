@@ -139,4 +139,11 @@ defmodule ColorUtilsTest do
     assert second.green == 127
     assert second.blue == 0
   end
+
+  test "calculate distance between two colors" do
+    rgb_1 = %RGB{red: 120.0, green: 145.0, blue: 135.0}
+    rgb_2 = %RGB{red: 50, green: 255, blue: 255}
+    distance = ColorUtils.distance(rgb_1, rgb_2)
+    assert Float.round(distance, 4) == 42.5447
+  end
 end

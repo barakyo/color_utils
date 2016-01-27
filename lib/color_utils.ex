@@ -51,6 +51,9 @@ defmodule ColorUtils do
   @xyz_white_ref %XYZ{x: 95.047, y: 100.0, z: 108.883}
   @xyz_epsilon 0.008856
   @xyz_kappa 903.3
+  @kl 1.0
+  @k1 0.045
+  @k2 0.015
 
   # Remove leading `"#"` if it exists
   def hex_to_rgb(<<"#", hex::binary>>) do
@@ -63,6 +66,40 @@ defmodule ColorUtils do
       blue: hex_to_decimal(hex_blue),
       green: hex_to_decimal(hex_green)
     }
+  end
+
+  def distance(%RGB{} = rgb_1, %RGB{} = rgb_2) do
+    # Convert colors to LAB
+    lab_a = rgb_to_lab(rgb_1)
+    lab_b = rgb_to_lab(rgb_2)
+
+    delta_l = lab_a.l - lab_b.l
+    delta_a = lab_a.a - lab_b.a
+    delta_b = lab_a.b - lab_b.b
+
+    c_1 = :math.sqrt(:math.pow(lab_a.a, 2) + :math.pow(lab_a.b, 2))
+    c_2 = :math.sqrt(:math.pow(lab_b.a, 2) + :math.pow(lab_b.b, 2))
+    delta_c = c_1 - c_2
+
+    delta_h_distance = :math.pow(delta_a, 2) + :math.pow(delta_b, 2) - :math.pow(delta_c, 2)
+    delta_h = case delta_h_distance > 0 do
+      true -> :math.sqrt(delta_h_distance)
+      false -> 0
+    end
+
+    { sl, kc, kh } = { 1.0, 1.0, 1.0 }
+    sc = 1.0 + (@k1 * c_1)
+    sh = 1.0 + (@k2 * c_1)
+
+    delta_l_kl_sl = delta_l / (@kl * sl)
+    delta_c_kc_sc = delta_c / (kc * sc)
+    delta_h_kh_sh = delta_h / (kh * sh)
+
+    i = :math.pow(delta_l_kl_sl, 2) + :math.pow(delta_c_kc_sc, 2) + :math.pow(delta_h_kh_sh, 2);
+    case i > 0 do
+      true -> :math.sqrt(i)
+      false -> 0
+    end
   end
 
   def rgb_to_hex(%RGB{} = rgb) do
