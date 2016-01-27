@@ -41,7 +41,7 @@ defmodule ColorUtils.Mixfile do
   defp package do
     [
       files: ["lib", "mix.exs", "README*", "test"],
-      contributors: ["Barak Karavani"],
+      maintainers: ["Barak Karavani"],
       licenses: ["Apache 2.0"],
       links: %{"GitHub" => "https://github.com/barakyo/color_utils"}
     ]

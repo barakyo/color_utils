@@ -20,7 +20,7 @@ Color Util library for Elixir.
 Include `:color_utils` under dependencies in your mix.exs file.
 
     defp deps do
-      [{:color_utils, "0.1.0"}]
+      [{:color_utils, "0.2.0"}]
     end
 
 ### Convert HEX to RGB ###
