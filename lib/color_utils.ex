@@ -1,4 +1,6 @@
 defmodule ColorUtils do
+  use Bitwise
+
   alias ColorUtils.RGB
   alias ColorUtils.HSV
   alias ColorUtils.XYZ
@@ -103,11 +105,11 @@ defmodule ColorUtils do
   end
 
   def rgb_to_hex(%RGB{} = rgb) do
-    # get colors as hex
-    blue = decimal_to_hex(rgb.blue)
-    red = decimal_to_hex(rgb.red)
-    green = decimal_to_hex(rgb.green)
-    "#" <> red <> green <> blue
+    hex = (1 <<< 24) + (rgb.red <<< 16) + (rgb.green <<< 8) + rgb.blue
+          |> Integer.to_string(16)
+          |> String.slice(1..1500)
+
+    "#" <> hex
   end
 
   defp pivot_rgb(n) do
@@ -272,19 +274,6 @@ defmodule ColorUtils do
 
   defp decimal_to_binary(num, remainders) when num > 0 do
     decimal_to_binary(div(num, 2), [rem(num, 2)] ++ remainders)
-  end
-
-  def decimal_to_hex(num) do
-    decimal_to_hex(num, "")
-  end
-
-  defp decimal_to_hex(0, hex) do
-    hex
-  end
-
-  defp decimal_to_hex(num, hex) when num > 0 do
-    remainder = Map.get(@dec_to_hex_symbols, rem(num, 16))
-    decimal_to_hex(div(num, 16), remainder <> hex)
   end
 
 end
