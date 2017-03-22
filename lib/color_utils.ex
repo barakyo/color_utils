@@ -60,6 +60,13 @@ defmodule ColorUtils do
     hex_to_rgb(hex)
   end
 
+  def hex_to_rgb(<<hex_red::binary-size(1), hex_green::binary-size(1), hex_blue::binary-size(1)>>) do
+    [hex_red, hex_green, hex_blue]
+    |> Enum.map(fn(hex) -> String.duplicate(hex, 2) end)
+    |> Enum.join
+    |> hex_to_rgb
+  end
+
   def hex_to_rgb(<<hex_red::binary-size(2), hex_green::binary-size(2), hex_blue::binary-size(2)>>) do
     %RGB{
       red: hex_to_decimal(hex_red),
@@ -252,7 +259,11 @@ defmodule ColorUtils do
   def hex_to_decimal(hex_value) do
     # Reverse string so that indices are coupled with the correct value to power
     # C8 -> 8C => (8 * 16^0) + (C * 16^1)
-    hex_list = String.reverse(hex_value) |> String.codepoints() |> Enum.with_index()
+    hex_list = hex_value
+    |> String.upcase()
+    |> String.reverse()
+    |> String.codepoints()
+    |> Enum.with_index()
     decimal_values = Enum.map(hex_list, fn({x, i} = _hex_tuple) ->
       # Convert hex value to 0-15
       x_value = Map.get(@hex_to_dec_symbols, x)
