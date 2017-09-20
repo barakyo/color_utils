@@ -2,14 +2,16 @@ defmodule ColorUtils.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :color_utils,
-     version: "0.2.0",
-     elixir: "~> 1.0",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     package: package,
-     description: description,
-     deps: deps]
+    [
+      app: :color_utils,
+      version: "0.2.1",
+      elixir: "~> 1.0",
+      build_embedded: Mix.env == :prod,
+      start_permanent: Mix.env == :prod,
+      package: package(),
+      description: description(),
+      deps: deps(),
+    ]
   end
 
   # Configuration for the OTP application
