@@ -37,13 +37,6 @@ defmodule ColorUtilsTest do
     assert binary_list == [1, 0]
   end
 
-  test "decimal to hex" do
-    hex_20 = ColorUtils.decimal_to_hex(20)
-    assert hex_20 == "14"
-    hex_255 = ColorUtils.decimal_to_hex(255)
-    assert hex_255 == "FF"
-  end
-
   test "rgb to hsv" do
     rgb = %RGB{red: 200, blue: 200, green: 200}
     actual_hsv = ColorUtils.rgb_to_hsv(rgb)
