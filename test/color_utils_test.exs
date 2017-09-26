@@ -32,6 +32,14 @@ defmodule ColorUtilsTest do
     assert rgb.green == 200
   end
 
+  test "converting from short form of hex to rgb" do
+    assert ColorUtils.hex_to_rgb("#C81") == ColorUtils.hex_to_rgb("#CC8811")
+  end
+
+  test "converting from downcase hex to rgb" do
+    assert ColorUtils.hex_to_rgb("#abcdef") == ColorUtils.hex_to_rgb("#ABCDEF")
+  end
+
   test "decimal to binary" do
     binary_list = ColorUtils.decimal_to_binary(2)
     assert binary_list == [1, 0]
