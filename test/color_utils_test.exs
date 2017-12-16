@@ -7,6 +7,9 @@ defmodule ColorUtilsTest do
     rgb = %RGB{red: 200, blue: 200, green: 200}
     hex = ColorUtils.rgb_to_hex(rgb)
     assert hex == "#C8C8C8"
+    rgb2 = %RGB{red: 186, green: 127, blue: 182}
+    hex2 = ColorUtils.rgb_to_hex(rgb2)
+    assert hex2 == "#BA7FB6"
   end
 
   test "converting rgb to xyz" do
