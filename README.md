@@ -18,34 +18,45 @@ Color Util library for Elixir.
 ## Usage ##
 
 Include `:color_utils` under dependencies in your mix.exs file.
-
+```elixir
     defp deps do
-      [{:color_utils, "0.2.0"}]
+      [
+        {:color_utils, "-> 0.2.0"}
+      ]
     end
+```
 
 ### Convert HEX to RGB ###
 
+```elixir
     iex(3)> ColorUtils.hex_to_rgb("#C8C8C8")
     %RGB{blue: 200.0, green: 200.0, red: 200.0}
+```
 
 ### Convert RGB to HEX ###
 
+```elixir
     iex(3)> rgb = %RGB{red: 200, blue: 200, green: 200}
     %ColorUtils.RGB{blue: 200, green: 200, red: 200}
     iex(4)> hex = ColorUtils.rgb_to_hex(rgb)
     "#C8C8C8"
+```
 
 ### Converting RGB to HSV ###
 
+```elixir
     iex(1)> rgb = %RGB{red: 200, blue: 200, green: 200}
     %RGB{blue: 200, green: 200, red: 200}
     iex(2)> hsv = ColorUtils.rgb_to_hsv(rgb)
     %HSV{hue: 0, saturation: 0.0, value: 78.4}
+```
 
 ### Converting HSV to RGB ###
 
+```elixir
     iex(7)> ColorUtils.hsv_to_rgb(%HSV{hue: 23, saturation: 15, value: 71.0})
     %ColorUtils.RGB{blue: 153, green: 164, red: 181}
+```
 
 ### Calculate Complementary Colors ###
 
