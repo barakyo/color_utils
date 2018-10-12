@@ -27,15 +27,15 @@ Include `:color_utils` under dependencies in your mix.exs file.
 ```
 
 ### Convert HEX to RGB ###
-```elixir
 
+```elixir
     iex(3)> ColorUtils.hex_to_rgb("#C8C8C8")
     %RGB{blue: 200.0, green: 200.0, red: 200.0}
 ```
 
 ### Convert RGB to HEX ###
-```elixir
 
+```elixir
     iex(3)> rgb = %RGB{red: 200, blue: 200, green: 200}
     %ColorUtils.RGB{blue: 200, green: 200, red: 200}
     iex(4)> hex = ColorUtils.rgb_to_hex(rgb)
